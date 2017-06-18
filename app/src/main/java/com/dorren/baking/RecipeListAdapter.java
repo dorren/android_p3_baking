@@ -1,6 +1,7 @@
 package com.dorren.baking;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,8 @@ import com.dorren.baking.models.Recipe;
  */
 
 public class RecipeListAdapter extends BaseAdapter {
-    private Context mContext;
     private Recipe[] mRecipes;
+    private Context mContext;
 
     public RecipeListAdapter(Context context){
       this.mContext = context;
@@ -53,8 +54,8 @@ public class RecipeListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View cardView;
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        final View cardView;
         if (convertView == null) {
             Context context = parent.getContext();
             int layoutIdForListItem = R.layout.recipe_card;
@@ -66,6 +67,15 @@ public class RecipeListAdapter extends BaseAdapter {
 
         TextView title = (TextView) cardView.findViewById(R.id.recipe_card_title);
         title.setText(getRecipe(position).getName());
+
+        title.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, RecipeActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, position);
+                mContext.startActivity(intent);
+            }
+        });
         return cardView;
     }
 }

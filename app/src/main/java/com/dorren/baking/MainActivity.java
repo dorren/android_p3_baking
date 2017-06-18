@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Recipe[] recipes) {
             mFragment.setData(recipes);
-
+            RecipeUtil.cache(recipes);
         }
     }
 }

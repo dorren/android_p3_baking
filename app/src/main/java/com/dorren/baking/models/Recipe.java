@@ -29,15 +29,15 @@ public class Recipe {
 
         String result = "recipe " + mName + "\n";
 
-//        result += "  --- Ingredients ---\n";
-//        for(Ingredient ingredient : mIngredients) {
-//            result += "  " + ingredient.toString() + "\n";
-//        }
-//
-//        result += "  --- Steps ---\n";
-//        for(Step step : mSteps) {
-//            result += "  " + step.toString() + "\n";
-//        }
+        result += "  --- Ingredients ---\n";
+        for(Ingredient ingredient : mIngredients) {
+            result += "  " + ingredient.toString() + "\n";
+        }
+
+        result += "  --- Steps ---\n";
+        for(Step step : mSteps) {
+            result += "  " + step.toString() + "\n";
+        }
         return result;
     }
 }

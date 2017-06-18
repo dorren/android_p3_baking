@@ -27,7 +27,7 @@ public class RecipeListFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_recipes_list, container, false);
         GridView gridView = (GridView) rootView.findViewById(R.id.recipes_grid_view);
 
-        mRecipeListAdapter = new RecipeListAdapter(getContext());
+        mRecipeListAdapter = new RecipeListAdapter(getActivity());
         gridView.setAdapter(mRecipeListAdapter);
 
         // Return the root view

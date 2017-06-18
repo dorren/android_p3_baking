@@ -18,6 +18,19 @@ import java.net.URL;
  */
 
 public class RecipeUtil {
+    private static Recipe[] cachedRecipes;
+
+    public static void cache(Recipe[] recipes){
+        cachedRecipes = recipes;
+    }
+
+    public static Recipe getCache(int position) {
+        if(cachedRecipes != null)
+            return cachedRecipes[position];
+        else
+            return null;
+    }
+
     public static Recipe[] all(URL url){
         Recipe[] recipes;
         String mErrorMsg;
