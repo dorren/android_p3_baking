@@ -25,6 +25,19 @@ public class Recipe {
     public Ingredient[] getIngredients() { return mIngredients; }
     public Step[] getSteps() { return mSteps; }
 
+    /**
+     * @return ingredients text
+     */
+    public String ingredientsText() {
+        String result = "";
+
+        for(Ingredient ingredient : mIngredients) {
+            result += ingredient.toString() + "\n";
+        }
+
+        return result;
+    }
+
     public String toString(){
 
         String result = "recipe " + mName + "\n";
