@@ -18,6 +18,9 @@ import java.net.URL;
  */
 
 public class RecipeUtil {
+    public static final String RECIPE_INDEX = "com.dorren.baking.recipe_index";
+    public static final String STEP_INDEX   = "com.dorren.baking.step_index";
+
     private static Recipe[] cachedRecipes;
 
     public static void cache(Recipe[] recipes){

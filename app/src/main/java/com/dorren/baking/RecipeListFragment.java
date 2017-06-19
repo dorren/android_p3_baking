@@ -36,7 +36,6 @@ public class RecipeListFragment extends Fragment {
 
     public void setData(Recipe[] recipes){
         mRecipeListAdapter.setData(recipes);
-        Log.d("Fragment", "count " + recipes.length + ", adapter" + mRecipeListAdapter.getCount());
     }
 
 }

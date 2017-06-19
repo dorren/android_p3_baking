@@ -12,7 +12,7 @@ import com.dorren.baking.models.Recipe;
  *
  */
 public class RecipeActivity extends AppCompatActivity {
-    private Recipe recipe;
+    private int recipeIndex;
     private RecipeDetailFragment mDetailFragment;
 
     @Override
@@ -23,13 +23,10 @@ public class RecipeActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.hasExtra(Intent.EXTRA_TEXT)) {
-                int position = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
-                recipe = RecipeUtil.getCache(position);
+                recipeIndex = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
                 renderRecipe();
             }
         }
-
-
     }
 
     private void renderRecipe(){
@@ -40,7 +37,7 @@ public class RecipeActivity extends AppCompatActivity {
     }
 
     private void renderDetailFragment() {
-        mDetailFragment = RecipeDetailFragment.newInstance(recipe);
+        mDetailFragment = RecipeDetailFragment.newInstance(recipeIndex);
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragmentManager.beginTransaction()

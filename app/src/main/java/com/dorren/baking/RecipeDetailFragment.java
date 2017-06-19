@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import com.dorren.baking.models.Recipe;
@@ -21,10 +22,9 @@ import com.dorren.baking.models.Recipe;
  * create an instance of this fragment.
  */
 public class RecipeDetailFragment extends Fragment {
-    private static final String RECIPE_POSITION = "position";
+    private RecipeStepsAdapter stepsAdapter;
 
-    // TODO: Rename and change types of parameters
-    private Recipe mRecipe;
+    private int recipeIndex;
 
     private OnFragmentInteractionListener mListener;
 
@@ -32,9 +32,14 @@ public class RecipeDetailFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public void setRecipe(Recipe recipe){
-        this.mRecipe = recipe;
+    public void setRecipeIndex(int index){
+        this.recipeIndex = index;
     }
+
+    public Recipe getRecipe(){
+        return RecipeUtil.getCache(recipeIndex);
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -43,9 +48,9 @@ public class RecipeDetailFragment extends Fragment {
      * @return A new instance of fragment RecipeDetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RecipeDetailFragment newInstance(Recipe recipe) {
+    public static RecipeDetailFragment newInstance(int index) {
         RecipeDetailFragment fragment = new RecipeDetailFragment();
-        fragment.setRecipe(recipe);
+        fragment.setRecipeIndex(index);
         return fragment;
     }
 
@@ -58,10 +63,16 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Recipe recipe = getRecipe();
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
         TextView tvIngredients = (TextView) rootView.findViewById(R.id.detail_ingredients);
-        tvIngredients.setText(mRecipe.ingredientsText());
+        tvIngredients.setText(recipe.ingredientsText());
+
+        GridView gridView = (GridView) rootView.findViewById(R.id.detail_steps_grid_view);
+
+        stepsAdapter = new RecipeStepsAdapter(getActivity(), recipeIndex);
+        gridView.setAdapter(stepsAdapter);
 
         return rootView;
     }
