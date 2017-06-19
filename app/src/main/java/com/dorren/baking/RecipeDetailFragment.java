@@ -1,6 +1,7 @@
 package com.dorren.baking;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -44,7 +45,7 @@ public class RecipeDetailFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param recipe current recipe.
+     * @param index recipe index.
      * @return A new instance of fragment RecipeDetailFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -63,18 +64,33 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Recipe recipe = getRecipe();
-        // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
-        TextView tvIngredients = (TextView) rootView.findViewById(R.id.detail_ingredients);
-        tvIngredients.setText(recipe.ingredientsText());
-
-        GridView gridView = (GridView) rootView.findViewById(R.id.detail_steps_grid_view);
-
-        stepsAdapter = new RecipeStepsAdapter(getActivity(), recipeIndex);
-        gridView.setAdapter(stepsAdapter);
+        renderIngredients(rootView);
+        renderRecipeSteps(rootView);
 
         return rootView;
+    }
+
+    private void renderIngredients(View rootView){
+        final Context ctx = getActivity();
+
+        TextView tvIngredients = (TextView) rootView.findViewById(R.id.detail_ingredients);
+        tvIngredients.setText("Recipe Ingredients");
+        tvIngredients.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), IngredientsActivity.class);
+                intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
+
+                ctx.startActivity(intent);
+            }
+        });
+    }
+
+    private void renderRecipeSteps(View rootView){
+        GridView gridView = (GridView) rootView.findViewById(R.id.detail_steps_grid_view);
+        stepsAdapter = new RecipeStepsAdapter(getActivity(), recipeIndex);
+        gridView.setAdapter(stepsAdapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

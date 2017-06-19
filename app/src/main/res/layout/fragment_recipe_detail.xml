@@ -8,7 +8,9 @@
     <TextView
         android:id="@+id/detail_ingredients"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
 
     <GridView
         android:id="@+id/detail_steps_grid_view"
