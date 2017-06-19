@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,21 @@ import android.widget.TextView;
 
 import com.dorren.baking.models.Recipe;
 import com.dorren.baking.models.Step;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
+
+import java.net.URISyntaxException;
+import java.net.URL;
 
 
 /**
@@ -24,10 +40,8 @@ import com.dorren.baking.models.Step;
 public class StepFragment extends Fragment {
     private int recipeIndex;
     private int stepIndex;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private SimpleExoPlayer mExoPlayer;
+    private SimpleExoPlayerView mPlayerView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -69,9 +83,42 @@ public class StepFragment extends Fragment {
         TextView tvDesc = (TextView)rootView.findViewById(R.id.step_long_description);
         tvDesc.setText(step.getDescription());
 
+        mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.playerView);
+        URL videoUrl = step.getVideoURL();
+        if(videoUrl == null){
+            Log.d("StepFragment", "videoUrl null");
+        }else {
+            Uri uri = Uri.parse(step.getVideoURL().toString());
+            initializePlayer(uri);
+        }
         return rootView;
     }
 
+    private void initializePlayer(Uri mediaUri) {
+        Context context = getActivity();
+
+        if (mExoPlayer == null) {
+            // Create an instance of the ExoPlayer.
+            TrackSelector trackSelector = new DefaultTrackSelector();
+            LoadControl loadControl = new DefaultLoadControl();
+            mExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector, loadControl);
+            mPlayerView.setPlayer(mExoPlayer);
+            // Prepare the MediaSource.
+            String userAgent = Util.getUserAgent(context, "BakingTime");
+            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
+                    context, userAgent), new DefaultExtractorsFactory(), null, null);
+            mExoPlayer.prepare(mediaSource);
+            mExoPlayer.setPlayWhenReady(true);
+        }
+    }
+
+    private void releasePlayer() {
+        if (mExoPlayer != null) {
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -95,6 +142,7 @@ public class StepFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        releasePlayer();
     }
 
     /**
