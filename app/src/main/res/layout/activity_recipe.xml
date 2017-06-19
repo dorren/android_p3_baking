@@ -5,16 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/detail_fragment_holder"
     tools:context="com.dorren.baking.RecipeActivity">
 
-    <TextView
-        android:id="@+id/detail_recipe_str"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Recipe"/>
-
-    <FrameLayout
-        android:id="@+id/detail_fragment_holder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 </LinearLayout>

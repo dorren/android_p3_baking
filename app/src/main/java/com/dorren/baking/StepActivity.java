@@ -1,6 +1,7 @@
 package com.dorren.baking;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import com.dorren.baking.models.Step;
 public class StepActivity extends AppCompatActivity {
     private int recipeIndex;
     private int stepIndex;
+    private StepFragment mStepFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,15 +30,20 @@ public class StepActivity extends AppCompatActivity {
             if (intent.hasExtra(RecipeUtil.STEP_INDEX))
                 stepIndex = intent.getIntExtra(RecipeUtil.STEP_INDEX, 0);
 
-            renderStep();
+            render();
         }
     }
 
-    private void renderStep() {
-        Recipe recipe = RecipeUtil.getCache(recipeIndex);
-        Step step = recipe.getSteps()[stepIndex];
+    public void render(){
+        renderStepFragment();
+    }
 
-        TextView tvDesc = (TextView)findViewById(R.id.step_long_description);
-        tvDesc.setText(step.getDescription());
+    private void renderStepFragment() {
+        mStepFragment = StepFragment.newInstance(recipeIndex, stepIndex);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .add(R.id.step_fragment_holder, mStepFragment)
+                .commit();
     }
 }

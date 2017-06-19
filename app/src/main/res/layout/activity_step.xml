@@ -4,12 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/step_fragment_holder"
     tools:context="com.dorren.baking.StepActivity">
 
-    <TextView
-        android:id="@+id/step_long_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="long description"/>
+
 
 </android.support.constraint.ConstraintLayout>

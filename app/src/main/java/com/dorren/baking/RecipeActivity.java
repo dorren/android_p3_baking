@@ -30,9 +30,6 @@ public class RecipeActivity extends AppCompatActivity {
     }
 
     private void renderRecipe(){
-        TextView detailStr = (TextView)findViewById(R.id.detail_recipe_str);
-        //detailStr.setText(recipe.toString());
-
         renderDetailFragment();
     }
 
