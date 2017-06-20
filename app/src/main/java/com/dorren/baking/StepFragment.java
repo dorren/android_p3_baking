@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.dorren.baking.databinding.FragmentStepBinding;
 import com.dorren.baking.models.Recipe;
 import com.dorren.baking.models.Step;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -75,13 +76,12 @@ public class StepFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        final View rootView = inflater.inflate(R.layout.fragment_step, container, false);
+        FragmentStepBinding stepBinding = FragmentStepBinding.inflate(inflater, container, false);
+        View rootView = stepBinding.getRoot();
+
         Recipe recipe = RecipeUtil.getCache(recipeIndex);
         Step step = recipe.getSteps()[stepIndex];
-
-        TextView tvDesc = (TextView)rootView.findViewById(R.id.step_long_description);
-        tvDesc.setText(step.getDescription());
+        stepBinding.setStep(step);
 
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.playerView);
         URL videoUrl = step.getVideoURL();
