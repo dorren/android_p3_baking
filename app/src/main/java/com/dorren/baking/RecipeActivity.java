@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -12,7 +13,7 @@ import com.dorren.baking.models.Recipe;
 /** screen to show recipe detail
  *
  */
-public class RecipeActivity extends AppCompatActivity {
+public class RecipeActivity extends AppCompatActivity implements RecipeDetailFragment.DetailFragmentListener {
     private int recipeIndex;
     private RecipeDetailFragment mDetailFragment;
 
@@ -52,5 +53,10 @@ public class RecipeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentItemClicked(int position) {
+        Log.d("detail activity", " clicked " + position);
     }
 }
