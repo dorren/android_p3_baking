@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.test.espresso.IdlingResource;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +21,17 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
     private RecipeListFragment mFragment;
+
+    // for testing
+    CountingIdlingResource idlingResource;
+
+    public CountingIdlingResource getIdlingResource(){
+        if(idlingResource == null) {
+            this.idlingResource = new CountingIdlingResource("MainActivity");
+
+        }
+        return idlingResource;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +80,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        protected void onPreExecute() {
+            getIdlingResource().increment(); // for testing
+            super.onPreExecute();
+        }
+
+        @Override
         protected Recipe[] doInBackground(String... params) {
             try {
                 String urlStr = mContext.getResources().getString(R.string.recipes_url);
@@ -74,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
                 mRecipes = RecipeUtil.all(url);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
+            } finally {
+                getIdlingResource().decrement(); // for testing
             }
             return mRecipes;
         }
