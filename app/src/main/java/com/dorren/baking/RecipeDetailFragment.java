@@ -25,7 +25,6 @@ import com.dorren.baking.models.Recipe;
  * create an instance of this fragment.
  */
 public class RecipeDetailFragment extends Fragment implements DetailNavAdapter.OnNavItemClickListener {
-    private RecipeStepsAdapter stepsAdapter;
     private RecyclerView mRecyclerView;
     private int recipeIndex;
 
@@ -68,32 +67,8 @@ public class RecipeDetailFragment extends Fragment implements DetailNavAdapter.O
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
 
-        //renderIngredients(rootView);
-        //renderRecipeSteps(rootView);
         renderNav(rootView);
         return rootView;
-    }
-
-    private void renderIngredients(View rootView){
-        final Context ctx = getActivity();
-
-        TextView tvIngredients = (TextView) rootView.findViewById(R.id.detail_ingredients);
-        tvIngredients.setText("Recipe Ingredients");
-        tvIngredients.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), IngredientsActivity.class);
-                intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
-
-                ctx.startActivity(intent);
-            }
-        });
-    }
-
-    private void renderRecipeSteps(View rootView){
-        GridView gridView = (GridView) rootView.findViewById(R.id.detail_steps_grid_view);
-        stepsAdapter = new RecipeStepsAdapter(getActivity(), recipeIndex);
-        gridView.setAdapter(stepsAdapter);
     }
 
     private void renderNav(View rootView){
@@ -107,13 +82,6 @@ public class RecipeDetailFragment extends Fragment implements DetailNavAdapter.O
         DetailNavAdapter navAdapter = new DetailNavAdapter(getRecipe(), this);
 
         mRecyclerView.setAdapter(navAdapter);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(int position) {
-        if (mListener != null) {
-            mListener.onFragmentItemClicked(position);
-        }
     }
 
     @Override
@@ -134,9 +102,13 @@ public class RecipeDetailFragment extends Fragment implements DetailNavAdapter.O
     }
 
     @Override
-    public void onClick(int index) {
-        Log.d("detail fragment", " clicked " + index);
-        mListener.onFragmentItemClicked(index);
+    public void onClickIngredient() {
+        mListener.onFragmentIngredientClicked();
+    }
+
+    @Override
+    public void onClickStep(int position) {
+        mListener.onFragmentStepClicked(position);
     }
 
     /**
@@ -150,7 +122,7 @@ public class RecipeDetailFragment extends Fragment implements DetailNavAdapter.O
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface DetailFragmentListener {
-        // TODO: Update argument type and name
-        void onFragmentItemClicked(int position);
+        void onFragmentIngredientClicked();
+        void onFragmentStepClicked(int stepIndex);
     }
 }

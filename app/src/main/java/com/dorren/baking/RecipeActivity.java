@@ -55,8 +55,21 @@ public class RecipeActivity extends AppCompatActivity implements RecipeDetailFra
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
-    public void onFragmentItemClicked(int position) {
-        Log.d("detail activity", " clicked " + position);
+    public void onFragmentIngredientClicked() {
+        Intent intent = new Intent(this, IngredientsActivity.class);
+        intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
+
+        startActivity(intent);
+    }
+
+    @Override
+    public void onFragmentStepClicked(int stepIndex) {
+        Intent intent = new Intent(this, StepActivity.class);
+        intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
+        intent.putExtra(RecipeUtil.STEP_INDEX, stepIndex);
+
+        startActivity(intent);
     }
 }

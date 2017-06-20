@@ -19,7 +19,8 @@ public class DetailNavAdapter extends RecyclerView.Adapter<DetailNavAdapter.Deta
     private final OnNavItemClickListener mClickHandler;
 
     public interface OnNavItemClickListener {
-        void onClick(int position);
+        void onClickIngredient();
+        void onClickStep(int position);
     }
 
     public DetailNavAdapter(Recipe recipe, OnNavItemClickListener clickHandler) {
@@ -71,7 +72,12 @@ public class DetailNavAdapter extends RecyclerView.Adapter<DetailNavAdapter.Deta
         public void onClick(View v) {
             int n = getAdapterPosition();
             Log.d("detail nav adapter", "clicked " + n);
-            mClickHandler.onClick(n);
+
+            if(n==0) {
+                mClickHandler.onClickIngredient();
+            }else{
+                mClickHandler.onClickStep(n - 1);
+            }
         }
     }
 }
