@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
+        <variable name="recipe" type="com.dorren.baking.models.Recipe"/>
         <variable name="step" type="com.dorren.baking.models.Step"/>
     </data>
     <android.support.constraint.ConstraintLayout
@@ -29,10 +30,21 @@
             tools:layout_editor_absoluteY="256dp" />
 
         <TextView
-            android:id="@+id/step_long_description"
+            android:id="@+id/step_heading"
             android:layout_width="368dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@+id/horizontalHalf"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:padding="10dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="@{recipe.stepHeading(step.getId())}"
+            tools:text="heading" />
+
+        <TextView
+            android:id="@+id/step_long_description"
+            android:layout_width="368dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/step_heading"
             app:layout_constraintLeft_toLeftOf="parent"
             android:padding="10dp"
             android:text="@{step.getDescription()}"
@@ -53,6 +65,7 @@
                 android:text="Previous Step"
                 android:layout_marginLeft="8dp"
                 android:layout_marginBottom="0dp"
+                android:onClick="previousStep"
                  />
             <Button
                 android:id="@+id/next_btn"
@@ -62,7 +75,8 @@
                 android:text="Next Step"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginBottom="0dp" />
+                android:layout_marginBottom="0dp"
+                android:onClick="nextStep"/>
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 </layout>

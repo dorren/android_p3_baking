@@ -25,6 +25,10 @@ public class Recipe {
     public Ingredient[] getIngredients() { return mIngredients; }
     public Step[] getSteps() { return mSteps; }
 
+    public String stepHeading(int stepIndex){
+        String result = "Step " + (stepIndex+1) + "/" + getSteps().length;
+        return result;
+    }
     /**
      * @return ingredients text
      */

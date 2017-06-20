@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.dorren.baking.models.Recipe;
@@ -45,5 +46,14 @@ public class StepActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .add(R.id.step_fragment_holder, mStepFragment)
                 .commit();
+    }
+
+    public void previousStep(View view){
+        mStepFragment.previousStep(view);
+    }
+
+
+    public void nextStep(View view){
+        mStepFragment.nextStep(view);
     }
 }

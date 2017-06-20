@@ -1,6 +1,7 @@
 package com.dorren.baking;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.dorren.baking.databinding.FragmentStepBinding;
@@ -50,6 +52,9 @@ public class StepFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public Recipe getRecipe(int recipeIndex){
+        return RecipeUtil.getCache(recipeIndex);
+    }
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -81,6 +86,7 @@ public class StepFragment extends Fragment {
 
         Recipe recipe = RecipeUtil.getCache(recipeIndex);
         Step step = recipe.getSteps()[stepIndex];
+        stepBinding.setRecipe(recipe);
         stepBinding.setStep(step);
 
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.playerView);
@@ -91,6 +97,10 @@ public class StepFragment extends Fragment {
             Uri uri = Uri.parse(step.getVideoURL().toString());
             initializePlayer(uri);
         }
+
+        setupBtn(rootView);
+
+
         return rootView;
     }
 
@@ -108,8 +118,16 @@ public class StepFragment extends Fragment {
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                     context, userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
+
         }
+    }
+
+    private void setupBtn(View rootView){
+        Button prevBtn = (Button)rootView.findViewById(R.id.prev_btn);
+        Button nextBtn = (Button)rootView.findViewById(R.id.next_btn);
+
+        prevBtn.setEnabled(stepIndex > 0);
+        nextBtn.setEnabled(stepIndex < (getRecipe(recipeIndex).getSteps().length - 1));
     }
 
     private void releasePlayer() {
@@ -142,7 +160,41 @@ public class StepFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         releasePlayer();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    public void previousStep(View view){
+        Log.d("stepFrag", "prev btn clicked");
+        if(stepIndex > 0) {
+            Intent intent = new Intent(getActivity(), StepActivity.class);
+            intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
+            intent.putExtra(RecipeUtil.STEP_INDEX, stepIndex - 1);
+
+            startActivity(intent);
+        }
+    }
+
+
+    public void nextStep(View view){
+        Log.d("stepFrag", "next btn clicked");
+        int length = getRecipe(recipeIndex).getSteps().length;
+        if(stepIndex < (length - 1)) {
+            Intent intent = new Intent(getActivity(), StepActivity.class);
+            intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
+            intent.putExtra(RecipeUtil.STEP_INDEX, stepIndex + 1);
+
+            startActivity(intent);
+        }
     }
 
     /**
