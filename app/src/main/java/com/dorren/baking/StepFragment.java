@@ -118,7 +118,7 @@ public class StepFragment extends Fragment {
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                     context, userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
-
+            mExoPlayer.setPlayWhenReady(true);
         }
     }
 

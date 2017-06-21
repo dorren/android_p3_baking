@@ -14,6 +14,8 @@ import com.dorren.baking.models.Recipe;
  *
  */
 public class RecipeActivity extends AppCompatActivity implements RecipeDetailFragment.DetailFragmentListener {
+    private static final String RECIPE_INDEX_KEY = "recipe_index_key";
+
     private int recipeIndex;
     private RecipeDetailFragment mDetailFragment;
 
@@ -26,9 +28,25 @@ public class RecipeActivity extends AppCompatActivity implements RecipeDetailFra
         if (intent != null) {
             if (intent.hasExtra(Intent.EXTRA_TEXT)) {
                 recipeIndex = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
-                renderRecipe();
             }
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        renderRecipe();
+        setToolbarTitle();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(RECIPE_INDEX_KEY, recipeIndex);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        recipeIndex = savedInstanceState.getInt(RECIPE_INDEX_KEY);
     }
 
     private void renderRecipe(){
@@ -42,6 +60,11 @@ public class RecipeActivity extends AppCompatActivity implements RecipeDetailFra
         fragmentManager.beginTransaction()
                 .add(R.id.detail_fragment_holder, mDetailFragment)
                 .commit();
+    }
+
+    private void setToolbarTitle(){
+        Recipe recipe = RecipeUtil.getCache(recipeIndex);
+        getSupportActionBar().setTitle(recipe.getName());
     }
 
     @Override

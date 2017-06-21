@@ -37,7 +37,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:padding="10dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="@{recipe.stepHeading(step.getId())}"
+            android:text="@{recipe.stepHeading(step)}"
             tools:text="heading" />
 
         <TextView

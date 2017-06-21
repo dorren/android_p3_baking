@@ -37,6 +37,7 @@ public class StepActivity extends AppCompatActivity {
 
     public void render(){
         renderStepFragment();
+        setToolbarTitle();
     }
 
     private void renderStepFragment() {
@@ -46,6 +47,11 @@ public class StepActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .add(R.id.step_fragment_holder, mStepFragment)
                 .commit();
+    }
+
+    private void setToolbarTitle(){
+        Recipe recipe = RecipeUtil.getCache(recipeIndex);
+        getSupportActionBar().setTitle(recipe.getName());
     }
 
     public void previousStep(View view){
