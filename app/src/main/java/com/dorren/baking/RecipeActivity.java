@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.dorren.baking.models.Recipe;
 import com.dorren.baking.utils.RecipeUtil;
@@ -19,10 +20,12 @@ import com.dorren.baking.widget.AppWidget;
  *
  */
 public class RecipeActivity extends AppCompatActivity implements RecipeDetailFragment.DetailFragmentListener {
+    private static final String KLASS = "RecipeActivity";
     private static final String RECIPE_INDEX_KEY = "recipe_index_key";
 
     private int recipeIndex;
     private RecipeDetailFragment mDetailFragment;
+    private View mRightView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +40,21 @@ public class RecipeActivity extends AppCompatActivity implements RecipeDetailFra
             recipeIndex = RecipeUtil.getLastRecipeIndex();
         }
 
+        mRightView = findViewById(R.id.detail_right_holder);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        renderRecipe();
+        renderDetailFragment();  // left side
+        if(isTablet()){  // show ingredients by default
+            renderIngredients();
+        }
+
         setToolbarTitle();
         updateWidgets(this);
+
     }
 
     @Override
@@ -58,10 +67,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipeDetailFra
         recipeIndex = savedInstanceState.getInt(RECIPE_INDEX_KEY);
     }
 
-    private void renderRecipe(){
-        renderDetailFragment();
-    }
-
     private void renderDetailFragment() {
         mDetailFragment = RecipeDetailFragment.newInstance(recipeIndex);
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -69,6 +74,24 @@ public class RecipeActivity extends AppCompatActivity implements RecipeDetailFra
         fragmentManager.beginTransaction()
                 .add(R.id.detail_fragment_holder, mDetailFragment)
                 .commit();
+    }
+
+    private void renderIngredients() {
+        IngredientsFragment ingredientsFragment = IngredientsFragment.newInstance(recipeIndex);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.detail_right_holder, ingredientsFragment)
+                .commit();
+    }
+
+    private void renderStepFragment(int stepIndex) {
+        StepFragment stepFragment = StepFragment.newInstance(recipeIndex, stepIndex);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.detail_right_holder, stepFragment)
+                .commit();
+    }
+
+    public boolean isTablet() {
+        return mRightView != null;
     }
 
     private void setToolbarTitle(){
@@ -90,19 +113,27 @@ public class RecipeActivity extends AppCompatActivity implements RecipeDetailFra
 
     @Override
     public void onFragmentIngredientClicked() {
-        Intent intent = new Intent(this, IngredientsActivity.class);
-        intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
+        if(isTablet()){
+            renderIngredients();
+        }else {
+            Intent intent = new Intent(this, IngredientsActivity.class);
+            intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
 
-        startActivity(intent);
+            startActivity(intent);
+        }
     }
 
     @Override
     public void onFragmentStepClicked(int stepIndex) {
-        Intent intent = new Intent(this, StepActivity.class);
-        intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
-        intent.putExtra(RecipeUtil.STEP_INDEX, stepIndex);
+        if(isTablet()){
+            renderStepFragment(stepIndex);
+        }else {
+            Intent intent = new Intent(this, StepActivity.class);
+            intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
+            intent.putExtra(RecipeUtil.STEP_INDEX, stepIndex);
 
-        startActivity(intent);
+            startActivity(intent);
+        }
     }
 
     public static void updateWidgets(Context context) {
