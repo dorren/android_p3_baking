@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.dorren.baking.models.Recipe;
+import com.dorren.baking.models.Step;
 import com.dorren.baking.utils.RecipeUtil;
 
 /**
@@ -29,8 +30,26 @@ public class StepActivity extends AppCompatActivity {
             if (intent.hasExtra(RecipeUtil.STEP_INDEX))
                 stepIndex = intent.getIntExtra(RecipeUtil.STEP_INDEX, 0);
 
-            render();
+
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        render();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(Recipe.RECIPE_INDEX_KEY, recipeIndex);
+        outState.putInt(Step.STEP_INDEX_KEY, stepIndex);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        recipeIndex = savedInstanceState.getInt(Recipe.RECIPE_INDEX_KEY);
+        stepIndex   = savedInstanceState.getInt(Step.STEP_INDEX_KEY);
     }
 
     public void render(){

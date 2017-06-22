@@ -12,6 +12,8 @@ import java.net.URL;
  */
 
 public class Step {
+    public static final String STEP_INDEX_KEY = "step_index_key";
+
     private int mId;
     private String mShortDescription, mDescription;
     private URL mVideoURL;

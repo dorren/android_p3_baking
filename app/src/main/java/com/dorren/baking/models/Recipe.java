@@ -5,6 +5,8 @@ package com.dorren.baking.models;
  */
 
 public class Recipe {
+    public static final String RECIPE_INDEX_KEY = "recipe_index_key";
+
     private int mId, mServings;
     private String mName, mImage;
     private Ingredient[] mIngredients;

@@ -21,7 +21,6 @@ import com.dorren.baking.widget.AppWidget;
  */
 public class RecipeActivity extends AppCompatActivity implements RecipeDetailFragment.DetailFragmentListener {
     private static final String KLASS = "RecipeActivity";
-    private static final String RECIPE_INDEX_KEY = "recipe_index_key";
 
     private int recipeIndex;
     private RecipeDetailFragment mDetailFragment;
@@ -59,12 +58,12 @@ public class RecipeActivity extends AppCompatActivity implements RecipeDetailFra
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(RECIPE_INDEX_KEY, recipeIndex);
+        outState.putInt(Recipe.RECIPE_INDEX_KEY, recipeIndex);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        recipeIndex = savedInstanceState.getInt(RECIPE_INDEX_KEY);
+        recipeIndex = savedInstanceState.getInt(Recipe.RECIPE_INDEX_KEY);
     }
 
     private void renderDetailFragment() {
