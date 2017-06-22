@@ -21,6 +21,14 @@ public class AppWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
+
+
+        RemoteViews rv = buildViews(context, appWidgetManager, appWidgetId);
+        appWidgetManager.updateAppWidget(appWidgetId, rv);
+    }
+
+    private static RemoteViews buildViews(Context context, AppWidgetManager appWidgetManager,
+                                   int appWidgetId){
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget);
 
         // setup listView
@@ -37,8 +45,7 @@ public class AppWidget extends AppWidgetProvider {
                 PendingIntent.FLAG_UPDATE_CURRENT);
         rv.setPendingIntentTemplate(R.id.appwidget_list_view, appPendingIntent);
 
-
-        appWidgetManager.updateAppWidget(appWidgetId, rv);
+        return rv;
     }
 
     @Override
@@ -55,7 +62,7 @@ public class AppWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        //WidgetDataService.startActionUpdate(context);
+        WidgetDataService.startActionUpdate(context);
 
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
@@ -70,6 +77,17 @@ public class AppWidget extends AppWidgetProvider {
 
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
+        }
+    }
+
+    public static void updateRecipeName(Context context, AppWidgetManager appWidgetManager,
+                                     int[] appWidgetIds, String recipeName) {
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidget_list_view);
+
+        for (int appWidgetId : appWidgetIds) {
+            RemoteViews rv = buildViews(context, appWidgetManager, appWidgetId);
+            rv.setTextViewText(R.id.appwidget_title, recipeName);
+            appWidgetManager.updateAppWidget(appWidgetId, rv);
         }
     }
 

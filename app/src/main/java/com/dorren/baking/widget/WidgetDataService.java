@@ -9,9 +9,11 @@ import android.database.Cursor;
 
 import com.dorren.baking.data.RecipeContentProvider;
 import com.dorren.baking.R;
+import com.dorren.baking.models.Ingredient;
 
 /**
- * No longer used. superseded by RecipeListViewService
+ * This is used to set the recipe name in the widget. Not the best way, but...
+ *
  *
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
@@ -55,13 +57,13 @@ public class WidgetDataService extends IntentService {
      */
     private void handleActionUpdate() {
         Cursor cursor = getContentResolver().query(RecipeContentProvider.CONTENT_URI, null, null, null, null);
-        //cursor.moveToFirst();
-        //String txt = cursor.getString(0);
+        cursor.moveToFirst();
+        String recipeName = cursor.getString(cursor.getColumnIndex(Ingredient.COLUMN_RECIPE_NAME));
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        //appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidget_text);
-        AppWidget.updateWidgets(this, appWidgetManager, appWidgetIds);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.appwidget_title);
+        AppWidget.updateRecipeName(this, appWidgetManager, appWidgetIds, recipeName);
     }
 
 }

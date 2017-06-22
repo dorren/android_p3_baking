@@ -1,6 +1,7 @@
 package com.dorren.baking.widget;
 
 import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -43,7 +44,6 @@ class RecipeListViewFactory implements RemoteViewsService.RemoteViewsFactory{
     @Override
     public void onDataSetChanged() {
         mCursor = mContext.getContentResolver().query(RecipeContentProvider.CONTENT_URI, null, null, null, null);
-
     }
 
     @Override

@@ -1,20 +1,24 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="#FFF"
     android:padding="@dimen/widget_margin">
 
     <TextView
         android:id="@+id/appwidget_title"
+        android:background="#DDD"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_margin="8dp" />
+        android:layout_margin="0dp"
+        android:padding="5dp"
+        android:text="Recipe Ingredients"/>
 
     <ListView
         android:id="@+id/appwidget_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </ListView>
-</RelativeLayout>
+</LinearLayout>
