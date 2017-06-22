@@ -41,7 +41,6 @@ public class DetailNavAdapter extends RecyclerView.Adapter<DetailNavAdapter.Deta
     @Override
     public void onBindViewHolder(DetailNavAdapter.DetailNavViewHolder holder, int position) {
         TextView btn = holder.mNavBtn;
-        Log.d("onBindViewHolder ", position + ", " + mRecipe.getSteps().length);
 
         if(position == 0){
             btn.setText("Recipe Ingredients");
@@ -54,7 +53,7 @@ public class DetailNavAdapter extends RecyclerView.Adapter<DetailNavAdapter.Deta
 
     @Override
     public int getItemCount() {
-        Log.d("detail nav adapter", "getItemCount steps length " + mRecipe.getSteps().length);
+        //Log.d("detail nav adapter", "getItemCount steps length " + mRecipe.getSteps().length);
 
         return mRecipe.getSteps().length + 1;
     }

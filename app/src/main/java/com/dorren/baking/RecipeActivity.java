@@ -1,14 +1,19 @@
 package com.dorren.baking;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.dorren.baking.models.Recipe;
+import com.dorren.baking.utils.RecipeUtil;
+import com.dorren.baking.widget.AppWidget;
 
 /** screen to show recipe detail
  *
@@ -25,18 +30,22 @@ public class RecipeActivity extends AppCompatActivity implements RecipeDetailFra
         setContentView(R.layout.activity_recipe);
 
         Intent intent = getIntent();
-        if (intent != null) {
-            if (intent.hasExtra(Intent.EXTRA_TEXT)) {
-                recipeIndex = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
-            }
+        if ((intent != null) && (intent.hasExtra(Intent.EXTRA_TEXT))) {
+            recipeIndex = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
+            RecipeUtil.setLastRecipeIndex(recipeIndex);
+        }else{
+            recipeIndex = RecipeUtil.getLastRecipeIndex();
         }
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
         renderRecipe();
         setToolbarTitle();
+        updateWidgets(this);
     }
 
     @Override
@@ -94,5 +103,19 @@ public class RecipeActivity extends AppCompatActivity implements RecipeDetailFra
         intent.putExtra(RecipeUtil.STEP_INDEX, stepIndex);
 
         startActivity(intent);
+    }
+
+    public static void updateWidgets(Context context) {
+        Intent intent = new Intent(context.getApplicationContext(), AppWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+
+        AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
+        int[] ids = widgetManager.getAppWidgetIds(new ComponentName(context, AppWidget.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            widgetManager.notifyAppWidgetViewDataChanged(ids, android.R.id.list);
+        }
+        context.sendBroadcast(intent);
     }
 }

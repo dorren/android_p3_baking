@@ -2,20 +2,13 @@ package com.dorren.baking;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.idling.CountingIdlingResource;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuInflater;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.GridView;
 
 import com.dorren.baking.models.Recipe;
+import com.dorren.baking.utils.RecipeUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -87,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 String urlStr = mContext.getResources().getString(R.string.recipes_url);
                 URL url = new URL(urlStr);
-                mRecipes = RecipeUtil.all(url);
+                mRecipes = RecipeUtil.fetchAll(url);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } finally {

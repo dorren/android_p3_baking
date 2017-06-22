@@ -30,11 +30,35 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".RecipeActivity" />
         </activity>
-        <activity android:name=".StepActivity" >
+        <activity android:name=".StepActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".RecipeActivity" />
         </activity>
+
+        <receiver android:name=".widget.AppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/baking_time_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".widget.WidgetDataService"
+            android:exported="false" />
+
+        <service android:name=".widget.RecipeListViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
+        <provider
+            android:name=".data.RecipeContentProvider"
+            android:authorities="com.dorren.baking"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>

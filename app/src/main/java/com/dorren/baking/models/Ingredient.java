@@ -5,6 +5,10 @@ package com.dorren.baking.models;
  */
 
 public class Ingredient {
+    public static final String COLUMN_RECIPE_NAME = "recipe_name";
+    public static final String COLUMN_RECIPE_INDEX = "recipe_index";
+    public static final String COLUMN_INGREDIENT  = "ingredient";
+
     private String mMeasure, mName;
     private String mQty;
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.dorren.baking.models.Recipe;
+import com.dorren.baking.utils.RecipeUtil;
 
 
 /**

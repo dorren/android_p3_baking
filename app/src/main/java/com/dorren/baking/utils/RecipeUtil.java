@@ -1,10 +1,13 @@
-package com.dorren.baking;
+package com.dorren.baking.utils;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.dorren.baking.R;
 import com.dorren.baking.models.Ingredient;
 import com.dorren.baking.models.Recipe;
 import com.dorren.baking.models.Step;
+import com.dorren.baking.utils.NetworkUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,23 +25,59 @@ public class RecipeUtil {
     public static final String STEP_INDEX   = "com.dorren.baking.step_index";
 
     private static Recipe[] cachedRecipes;
+    private static int lastRecipeIndex = 0; // used by app widget
 
     public static void cache(Recipe[] recipes){
         cachedRecipes = recipes;
     }
 
     public static Recipe getCache(int position) {
-        if(cachedRecipes != null)
-            return cachedRecipes[position];
-        else
-            return null;
+        Recipe recipe = null;
+        if (cachedRecipes != null) {
+            recipe = cachedRecipes[position];
+        }
+
+        return recipe;
     }
 
-    public static Recipe[] all(URL url){
+    public static Recipe[] getCache() {
+        return cachedRecipes;
+    }
+
+    public static void setLastRecipeIndex(int index){
+        lastRecipeIndex = index;
+    }
+
+    public static int getLastRecipeIndex() { return lastRecipeIndex; }
+
+    public static Recipe getLastRecipe(Context context){
+        if(cachedRecipes == null){     // load cache
+            try{
+                String urlStr = context.getResources().getString(R.string.recipes_url);
+                URL url = new URL(urlStr);
+                cachedRecipes = fetchAll(url);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return cachedRecipes[lastRecipeIndex];
+    }
+
+
+    public static Recipe[] fetchAll(URL url){
+        Log.d("RecipeUtil",  "fetchAll ");
+
         Recipe[] recipes;
         String mErrorMsg;
 
+        if(cachedRecipes != null) {
+            Log.d("RecipeUtil",  "fetchAll() found cache " + cachedRecipes.length);
+            return cachedRecipes;
+        }
+
         try {
+            Log.d("RecipeUtil",  "fetchAll() loading");
             String response = NetworkUtil.getResponseFromHttpUrl(url);
             JSONArray jsonArray = new JSONArray(response);
 
@@ -55,9 +94,8 @@ public class RecipeUtil {
                 String image = item.getString("image");
 
                 recipes[i] = new Recipe(id, servings, name, image, ingredients, steps);
-                Log.d("RecipeUtil", recipes[i].toString());
+                //Log.d("RecipeUtil", recipes[i].toString());
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             mErrorMsg = e.getMessage();

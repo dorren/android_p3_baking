@@ -1,4 +1,4 @@
-package com.dorren.baking;
+package com.dorren.baking.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
