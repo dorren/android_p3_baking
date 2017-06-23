@@ -8,3 +8,9 @@ Phone's page flow
 
 
 Tablet would only have first 2 activities, MainActivity and RecipeActivity.
+
+## Links
+
+[Requirement](https://review.udacity.com/#!/rubrics/829/view)
+
+[mockup](https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58dee986_bakingapp-mocks/bakingapp-mocks.pdf)
