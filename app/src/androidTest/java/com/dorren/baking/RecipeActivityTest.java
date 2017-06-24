@@ -20,6 +20,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 /**
@@ -47,7 +48,12 @@ public class RecipeActivityTest {
 
     @Test
     public void checkUI() {
+        onView(withId(R.id.detail_fragment_holder)).check(matches(isDisplayed()));
         onView(withText("Recipe Ingredients")).check(matches(isDisplayed()));
+
+        if(isTablet){
+            onView(withId(R.id.detail_right_holder)).check(matches(isDisplayed()));
+        }
     }
 
     @Test
@@ -57,7 +63,7 @@ public class RecipeActivityTest {
 
 
         if(isTablet){
-
+            onView(withId(R.id.fragment_ingredients_txt)).check(matches(isDisplayed()));
         }else {
             intended(hasComponent(IngredientsActivity.class.getName()));
         }
@@ -71,7 +77,7 @@ public class RecipeActivityTest {
         onView(withText(step_name)).perform(click());
 
         if(isTablet){
-
+            onView(withId(R.id.step_heading)).check(matches(isDisplayed()));
         }else {
             // should be on RecipeActivity
             intended(hasComponent(StepActivity.class.getName()));
