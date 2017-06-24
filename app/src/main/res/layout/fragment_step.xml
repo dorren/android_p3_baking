@@ -92,6 +92,7 @@
                 android:layout_height="wrap_content"
                 android:text="Previous Step"
                 android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginBottom="0dp"
 
                  />
@@ -102,7 +103,9 @@
                 app:layout_constraintLeft_toRightOf="@+id/prev_btn"
                 android:text="Next Step"
                 android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="0dp"
                 />
         </LinearLayout>
