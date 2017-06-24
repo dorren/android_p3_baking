@@ -46,10 +46,12 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
         // set image
         String imagePath = recipe.getImage();
+        ImageView imageView = holder.recipeImage;
         if(imagePath == null || imagePath.equals("")){ // set default
-            Picasso.with(mContext).load(R.drawable.cake).into(holder.recipeImage);
+            imageView.setTag(R.drawable.cake);
+            Picasso.with(mContext).load(R.drawable.cake).into(imageView);
         }else{
-            Picasso.with(mContext).load(imagePath).into(holder.recipeImage);
+            Picasso.with(mContext).load(imagePath).into(imageView);
         }
     }
 

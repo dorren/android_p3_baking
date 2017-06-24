@@ -16,6 +16,7 @@ import com.dorren.baking.models.Recipe;
 
 public class DetailNavAdapter extends RecyclerView.Adapter<DetailNavAdapter.DetailNavViewHolder> {
     private Recipe mRecipe;
+    private Context mContext;
     private final OnNavItemClickListener mClickHandler;
 
     public interface OnNavItemClickListener {
@@ -30,9 +31,9 @@ public class DetailNavAdapter extends RecyclerView.Adapter<DetailNavAdapter.Deta
 
     @Override
     public DetailNavAdapter.DetailNavViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+        mContext = parent.getContext();
         int layoutIdForListItem = R.layout.step_card;
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(layoutIdForListItem, parent, false);
 
         return new DetailNavViewHolder(view);
@@ -41,9 +42,10 @@ public class DetailNavAdapter extends RecyclerView.Adapter<DetailNavAdapter.Deta
     @Override
     public void onBindViewHolder(DetailNavAdapter.DetailNavViewHolder holder, int position) {
         TextView btn = holder.mNavBtn;
+        String ingredients_txt = mContext.getResources().getString(R.string.ingredients_text);
 
         if(position == 0){
-            btn.setText("Recipe Ingredients");
+            btn.setText(ingredients_txt);
         }else {
             String desc = mRecipe.getSteps()[position-1].getShortDescription();
             btn.setText(desc);

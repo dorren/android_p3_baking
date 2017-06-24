@@ -1,13 +1,11 @@
 package com.dorren.baking;
 
 import android.content.Intent;
+import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
 
-import com.dorren.baking.models.Ingredient;
 import com.dorren.baking.models.Recipe;
-import com.dorren.baking.models.Step;
 import com.dorren.baking.utils.RecipeUtil;
 
 import org.junit.After;
@@ -16,15 +14,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-
-import static org.mockito.Mockito.*;
 
 /**
  * Created by dorrenchen on 6/22/17.
@@ -32,41 +28,58 @@ import static org.mockito.Mockito.*;
 @RunWith(AndroidJUnit4.class)
 public class RecipeActivityTest {
     private static final String KLASS="RecipeActivityTest";
-
+    private RecipeActivity mActivity;
+    private boolean isTablet;
 
     @Rule
     public ActivityTestRule<RecipeActivity> mActivityTestRule =
             new ActivityTestRule<>(RecipeActivity.class, false, false); // don't launch
 
-
-    public void setupCache() {
-        // setup RecipeUtil cache
-        if(RecipeUtil.getCache() == null) {
-            URL recipesURL = null;
-            try {
-                recipesURL = new URL("https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json");
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            Recipe[] recipes = RecipeUtil.fetchAll(recipesURL);
-            RecipeUtil.cache(recipes);
-        }
-    }
-
     @Before
     public void beforeTest() {
-        setupCache();
+        TestHelper.setupRecipes();
+        Intents.init();   // for testing activity transitions
 
-        mActivityTestRule.launchActivity(new Intent()); // manually launch
+        mActivity = mActivityTestRule.launchActivity(new Intent()); // manually launch
+        isTablet = TestHelper.isScreenSw600dp(mActivity);
     }
+
 
     @Test
     public void checkUI() {
         onView(withText("Recipe Ingredients")).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void clickIngredientsButton() {
+        String ingredients_txt = TestHelper.getResourceString(R.string.ingredients_text);
+        onView(withText(ingredients_txt)).perform(click());
+
+
+        if(isTablet){
+
+        }else {
+            intended(hasComponent(IngredientsActivity.class.getName()));
+        }
+    }
+
+    @Test
+    public void clickStepButton() {
+        Recipe recipe = RecipeUtil.getCache(0);
+        String step_name = recipe.getSteps()[0].getShortDescription();
+
+        onView(withText(step_name)).perform(click());
+
+        if(isTablet){
+
+        }else {
+            // should be on RecipeActivity
+            intended(hasComponent(StepActivity.class.getName()));
+        }
+    }
 
     @After
     public void afterTest() {
+        Intents.release();
     }
 }
