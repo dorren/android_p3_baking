@@ -1,5 +1,6 @@
 package com.dorren.baking;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.test.espresso.idling.CountingIdlingResource;
@@ -13,7 +14,7 @@ import com.dorren.baking.utils.RecipeUtil;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecipeListAdapter.RecipeClickListener {
     private RecipeListFragment mFragment;
 
     // for testing
@@ -57,6 +58,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(int position) {
+        Intent intent = new Intent(this, RecipeActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, position);
+        startActivity(intent);
     }
 
     public class FetchRecipesTask extends AsyncTask<String, Void, Recipe[]> {

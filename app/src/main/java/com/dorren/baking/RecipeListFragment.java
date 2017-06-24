@@ -2,11 +2,11 @@ package com.dorren.baking;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 
 import com.dorren.baking.models.Recipe;
 
@@ -16,6 +16,7 @@ import com.dorren.baking.models.Recipe;
 
 public class RecipeListFragment extends Fragment {
     private RecipeListAdapter mRecipeListAdapter;
+    private RecyclerView mRecyclerView;
 
     public RecipeListFragment() {
     }
@@ -25,10 +26,17 @@ public class RecipeListFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_recipes_list, container, false);
-        GridView gridView = (GridView) rootView.findViewById(R.id.recipes_grid_view);
 
-        mRecipeListAdapter = new RecipeListAdapter(getActivity());
-        gridView.setAdapter(mRecipeListAdapter);
+
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recipes_grid_view);
+
+        int columns = isTablet() ? 3 : 1;
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), columns);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
+        mRecipeListAdapter = new RecipeListAdapter((RecipeListAdapter.RecipeClickListener) getActivity());
+        mRecyclerView.setAdapter(mRecipeListAdapter);
 
         // Return the root view
         return rootView;
@@ -37,5 +45,10 @@ public class RecipeListFragment extends Fragment {
     public void setData(Recipe[] recipes){
         mRecipeListAdapter.setData(recipes);
     }
+
+    private boolean isTablet(){
+        return getResources().getBoolean(R.bool.isTablet);
+    }
+
 
 }

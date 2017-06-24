@@ -1,13 +1,10 @@
 package com.dorren.baking;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,34 +15,51 @@ import com.squareup.picasso.Picasso;
  * Created by dorrenchen on 6/18/17.
  */
 
-public class RecipeListAdapter extends BaseAdapter {
+public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.RecipeListViewHolder> {
     private static String KLASS = "RecipeListAdapter";
     private Recipe[] mRecipes;
+    private RecipeClickListener mClickHandler;
     private Context mContext;
 
-    public RecipeListAdapter(Context context){
-      this.mContext = context;
+    public interface RecipeClickListener{
+        void onClick(int position);
+    }
+
+    public RecipeListAdapter(RecipeClickListener handler){
+        this.mClickHandler = handler;
     }
 
     @Override
-    public int getCount() {
+    public RecipeListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
+        int layoutIdForListItem = R.layout.recipe_card;
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = inflater.inflate(layoutIdForListItem, parent, false);
+
+        return new RecipeListViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(RecipeListViewHolder holder, int position) {
+        Recipe recipe = getRecipe(position);
+        holder.mTitle.setText(recipe.getName());
+
+        // set image
+        String imagePath = recipe.getImage();
+        if(imagePath == null || imagePath.equals("")){ // set default
+            Picasso.with(mContext).load(R.drawable.cake).into(holder.recipeImage);
+        }else{
+            Picasso.with(mContext).load(imagePath).into(holder.recipeImage);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
         if(mRecipes != null){
             return mRecipes.length;
         }else {
             return 0;
         }
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return mRecipes[position];
-    }
-
-    @Override
-    public long getItemId(int position) {
-        int id = mRecipes[position].getId();
-        long longId = new Long(id);
-        return longId;
     }
 
     public void setData(Recipe[] recipes){
@@ -54,50 +68,26 @@ public class RecipeListAdapter extends BaseAdapter {
     }
 
     private Recipe getRecipe(int position){
-        return (Recipe)getItem(position);
+        return mRecipes[position];
     }
 
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        final View cardView;
-        if (convertView == null) {
-            Context context = parent.getContext();
-            int layoutIdForListItem = R.layout.recipe_card;
-            LayoutInflater inflater = LayoutInflater.from(context);
-            cardView = inflater.inflate(layoutIdForListItem, parent, false);
-        } else {
-            cardView = convertView;
+
+    public class RecipeListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public TextView mTitle;
+        public ImageView recipeImage;
+
+        public RecipeListViewHolder(View itemView) {
+            super(itemView);
+
+            mTitle = (TextView) itemView.findViewById(R.id.recipe_card_title);
+            recipeImage = (ImageView) itemView.findViewById(R.id.recipe_card_image);
+            itemView.setOnClickListener(this);
         }
 
-        Recipe recipe = getRecipe(position);
-        TextView title = (TextView) cardView.findViewById(R.id.recipe_card_title);
-        title.setText(recipe.getName());
-
-        setImage(cardView, recipe.getImage());
-
-        title.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, RecipeActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, position);
-                mContext.startActivity(intent);
-            }
-        });
-        return cardView;
-    }
-
-    private void setImage(View parent, String imagePath){
-        ImageView imageView = (ImageView) parent.findViewById(R.id.recipe_card_image);
-
-        if(imagePath == null || imagePath.equals("")){
-            // set default
-            //Drawable defaultIcon = parent.getResources().getDrawable(R.drawable.cake, null);
-            Log.d(KLASS, "setImage " + R.drawable.cake + ", " + imageView.toString());
-            Picasso.with(parent.getContext()).load(R.drawable.cake).into(imageView);
-        }else{
-            Picasso.with(parent.getContext()).load(imagePath).into(imageView);
+        @Override
+        public void onClick(View v) {
+            int n = getAdapterPosition();
+            mClickHandler.onClick(n);
         }
-
-
     }
 }
