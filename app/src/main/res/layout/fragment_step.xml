@@ -11,14 +11,41 @@
         android:layout_height="match_parent"
         tools:context="com.dorren.baking.StepFragment">
 
-        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-            android:id="@+id/playerView"
+        <FrameLayout
+            android:id="@+id/step_top_half"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:background="#000"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/horizontalHalf"
-            app:layout_constraintLeft_toLeftOf="parent" />
+            app:layout_constraintLeft_toLeftOf="parent">
+
+
+
+            <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+                android:id="@+id/playerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:onClick="playVideo"
+                android:visibility="invisible"/>
+
+            <ImageView
+                android:id="@+id/video_thumb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="playVideo" />
+
+            <TextView
+                android:id="@+id/step_video_unavailable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#EEE"
+                android:layout_gravity="center"
+                android:text="@string/video_unavailable"
+                android:visibility="gone"/>
+        </FrameLayout>
 
         <android.support.constraint.Guideline
             android:id="@+id/horizontalHalf"
@@ -27,7 +54,7 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.5"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="256dp" />
+            tools:layout_editor_absoluteY="337dp" />
 
         <TextView
             android:id="@+id/step_heading"
@@ -51,6 +78,7 @@
             tools:text="long description" />
 
         <LinearLayout
+            android:id="@+id/step_buttons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -65,7 +93,7 @@
                 android:text="Previous Step"
                 android:layout_marginLeft="8dp"
                 android:layout_marginBottom="0dp"
-                android:onClick="previousStep"
+
                  />
             <Button
                 android:id="@+id/next_btn"
@@ -76,7 +104,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="0dp"
-                android:onClick="nextStep"/>
+                />
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 </layout>

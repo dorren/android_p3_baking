@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.dorren.baking.databinding.FragmentStepBinding;
 import com.dorren.baking.models.Recipe;
@@ -27,6 +29,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 
@@ -34,7 +37,7 @@ import java.net.URL;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link StepFragment.OnFragmentInteractionListener} interface
+ * {@link StepFragment.StepFragmentListener} interface
  * to handle interaction events.
  * Use the {@link StepFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -44,8 +47,10 @@ public class StepFragment extends Fragment {
     private int stepIndex;
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
+    private ImageView mThumbnail;
+    private TextView mNoVideo;
 
-    private OnFragmentInteractionListener mListener;
+    private StepFragmentListener mListener;
 
     public StepFragment() {
         // Required empty public constructor
@@ -92,13 +97,15 @@ public class StepFragment extends Fragment {
         URL videoUrl = step.getVideoURL();
         if(videoUrl == null){
             Log.d("StepFragment", "videoUrl null");
+            mNoVideo = (TextView) rootView.findViewById(R.id.step_video_unavailable);
+            mNoVideo.setVisibility(View.VISIBLE);
         }else {
+            setupThumbnail(rootView);
             Uri uri = Uri.parse(step.getVideoURL().toString());
             initializePlayer(uri);
         }
 
         setupBtn(rootView);
-
 
         return rootView;
     }
@@ -117,7 +124,7 @@ public class StepFragment extends Fragment {
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                     context, userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
+
         }
     }
 
@@ -127,6 +134,49 @@ public class StepFragment extends Fragment {
 
         prevBtn.setEnabled(stepIndex > 0);
         nextBtn.setEnabled(stepIndex < (getRecipe(recipeIndex).getSteps().length - 1));
+
+        prevBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (stepIndex > 0) {
+                    mListener.onClickPrevious(recipeIndex, stepIndex - 1);
+                }
+            }
+        });
+
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int length = getRecipe(recipeIndex).getSteps().length;
+                if(stepIndex < (length - 1)) {
+                    mListener.onClickNext(recipeIndex, stepIndex + 1);
+                }
+            }
+        });
+    }
+
+    public void setupThumbnail(View rootView) {
+        Context context = getContext();
+        Recipe recipe = getRecipe(recipeIndex);
+        Step step = recipe.getSteps()[stepIndex];
+
+        // set image
+        String thumbnailURL = step.getmThumbnailURL();
+        mThumbnail = (ImageView) rootView.findViewById(R.id.video_thumb);
+        mThumbnail.setVisibility(View.VISIBLE);
+        if(thumbnailURL == null || thumbnailURL.equals("")){ // set default
+            mThumbnail.setTag(android.R.drawable.ic_media_play);
+            Picasso.with(context).load(android.R.drawable.ic_media_play).into(mThumbnail);
+        }else{
+            Picasso.with(context).load(thumbnailURL).into(mThumbnail);
+        }
+
+        mThumbnail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playVideo(v);
+            }
+        });
     }
 
     private void releasePlayer() {
@@ -137,21 +187,14 @@ public class StepFragment extends Fragment {
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof StepFragmentListener) {
+            mListener = (StepFragmentListener) context;
         } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
+            throw new RuntimeException(context.toString()
+                    + " must implement StepFragmentListener");
         }
     }
 
@@ -172,42 +215,16 @@ public class StepFragment extends Fragment {
         super.onResume();
     }
 
-    public void previousStep(View view){
-        Log.d("stepFrag", "prev btn clicked");
-        if(stepIndex > 0) {
-            Intent intent = new Intent(getActivity(), StepActivity.class);
-            intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
-            intent.putExtra(RecipeUtil.STEP_INDEX, stepIndex - 1);
-
-            startActivity(intent);
-        }
+    public void playVideo(View view){
+        mThumbnail.setVisibility(View.INVISIBLE);
+        mPlayerView.setVisibility(View.VISIBLE);
+        mExoPlayer.setPlayWhenReady(true);
     }
 
 
-    public void nextStep(View view){
-        Log.d("stepFrag", "next btn clicked");
-        int length = getRecipe(recipeIndex).getSteps().length;
-        if(stepIndex < (length - 1)) {
-            Intent intent = new Intent(getActivity(), StepActivity.class);
-            intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
-            intent.putExtra(RecipeUtil.STEP_INDEX, stepIndex + 1);
-
-            startActivity(intent);
-        }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
+    public interface StepFragmentListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onClickPrevious(int recipeIndex, int stepIndex);
+        void onClickNext(int recipeIndex, int stepIndex);
     }
 }

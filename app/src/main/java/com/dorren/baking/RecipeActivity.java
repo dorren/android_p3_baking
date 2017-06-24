@@ -8,7 +8,6 @@ import android.os.Build;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -19,7 +18,9 @@ import com.dorren.baking.widget.AppWidget;
 /** screen to show recipe detail
  *
  */
-public class RecipeActivity extends AppCompatActivity implements RecipeDetailFragment.DetailFragmentListener {
+public class RecipeActivity extends AppCompatActivity implements
+        RecipeDetailFragment.DetailFragmentListener,
+        StepFragment.StepFragmentListener {
     private static final String KLASS = "RecipeActivity";
 
     private int recipeIndex;
@@ -147,5 +148,19 @@ public class RecipeActivity extends AppCompatActivity implements RecipeDetailFra
             widgetManager.notifyAppWidgetViewDataChanged(ids, android.R.id.list);
         }
         context.sendBroadcast(intent);
+    }
+
+
+    /**
+     * when user click on the previous button on the stepFragment
+     */
+    @Override
+    public void onClickPrevious(int recipeIndex, int stepIndex) {
+        renderStepFragment(stepIndex);
+    }
+
+    @Override
+    public void onClickNext(int recipeIndex, int stepIndex) {
+        renderStepFragment(stepIndex);
     }
 }

@@ -134,7 +134,7 @@ public class RecipeUtil {
                 String str = item.getString("videoURL");
                 if(!str.equals("")) {
                     try{
-                        videoURL = new URL(item.getString("videoURL"));
+                        videoURL = new URL(str);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
@@ -143,7 +143,8 @@ public class RecipeUtil {
                 steps[i] = new Step(item.getInt("id"),
                                     item.getString("shortDescription"),
                                     item.getString("description"),
-                                    videoURL);
+                                    videoURL,
+                                    item.getString("thumbnailURL"));
             }
         } catch (JSONException e) {
             e.printStackTrace();

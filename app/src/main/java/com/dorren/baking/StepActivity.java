@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.dorren.baking.models.Recipe;
@@ -13,7 +14,7 @@ import com.dorren.baking.utils.RecipeUtil;
 /**
  * display the recipe step page.
  */
-public class StepActivity extends AppCompatActivity {
+public class StepActivity extends AppCompatActivity implements StepFragment.StepFragmentListener{
     private int recipeIndex;
     private int stepIndex;
     private StepFragment mStepFragment;
@@ -71,12 +72,24 @@ public class StepActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(recipe.getName());
     }
 
-    public void previousStep(View view){
-        mStepFragment.previousStep(view);
+    /**
+     * when user click on the previous button on the stepFragment
+     */
+    @Override
+    public void onClickPrevious(int recipeIndex, int stepIndex) {
+        openNewStep(recipeIndex, stepIndex);
     }
 
+    @Override
+    public void onClickNext(int recipeIndex, int stepIndex) {
+        openNewStep(recipeIndex, stepIndex);
+    }
 
-    public void nextStep(View view){
-        mStepFragment.nextStep(view);
+    private void openNewStep(int recipeIndex, int stepIndex){
+        Intent intent = new Intent(this, StepActivity.class);
+        intent.putExtra(RecipeUtil.RECIPE_INDEX, recipeIndex);
+        intent.putExtra(RecipeUtil.STEP_INDEX, stepIndex);
+
+        startActivity(intent);
     }
 }
